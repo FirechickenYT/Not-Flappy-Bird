@@ -5,8 +5,8 @@ from time import sleep
 
 
 pygame.init()
-width = 480
-height = 640
+width = 640
+height = 480
 DISPLAY=pygame.display.set_mode((width,height),0,32)
 
 white=(255,255,255)
