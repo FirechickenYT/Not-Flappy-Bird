@@ -1,3 +1,4 @@
+from sqlite3 import Timestamp
 import pygame, sys
 from pygame.locals import *
 import random
@@ -8,6 +9,8 @@ pygame.init()
 width = int(input("Enter screen width"))
 height = int(input("Enter screen height"))
 DISPLAY=pygame.display.set_mode((width,height),0,32)
+
+clock = pygame.time.Clock()
 
 white=(255,255,255)
 blue=(0,0,255)
@@ -58,6 +61,8 @@ playerH = playerW
 player = pygame.draw.rect(DISPLAY,red,(player_x_pos,player_y_pos,playerW,playerH))
 
 times = 0
+timesThroughText = 0
+
 speed = width / 425
 if height > width:
     speed *= 1.5
@@ -70,8 +75,19 @@ moving = True
 
 points = -1
 drawPipes(w1)
-
+currentX = player_x_pos
+currentY = player_y_pos
 while True:
+    clock.tick(120)
+    prevX = currentX
+    currentX = player_x_pos
+    currentY = player_y_pos
+    xDiff = currentX - prevX
+    prevY = currentY
+    yDiff = currentY - prevY
+    diff = xDiff + yDiff
+    vel = diff * 120
+
     for event in pygame.event.get():
         if event.type==QUIT:
             pygame.quit()
@@ -143,6 +159,14 @@ while True:
         DISPLAY.blit(scoreText, (width/2 - 50, height/2 - 100))
     elif points >= 100:
         DISPLAY.blit(scoreText, (width/2 - 75, height/2 - 100))
+    if timesThroughText >= 20:
+        pygame.draw.rect(DISPLAY,white,(50,0,400,100))
+        spdtxt = "Speed: " + str(round(vel + speed + downSpeed, 2))+ "m/s"
+        speedText = speedFont.render(spdtxt, False, (100, 100, 100))
+        DISPLAY.blit(speedText, (0, 0))
+        timesThroughText = 0
+        print("Bruh")
+    timesThroughText += 1
     player = pygame.draw.rect(DISPLAY,red,(player_x_pos,player_y_pos,playerW,playerH))
     pygame.display.update()
 
