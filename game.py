@@ -5,8 +5,8 @@ from time import sleep
 
 
 pygame.init()
-width = 640
-height = 480
+width = 480
+height = 640
 DISPLAY=pygame.display.set_mode((width,height),0,32)
 
 white=(255,255,255)
@@ -16,22 +16,18 @@ green = (0, 255, 0)
 
 DISPLAY.fill(white)
 
-def setNone():
-    return
-
 def drawPipes(w1):
     DISPLAY.fill(white)
     global y1
     global y2
     global points
     points += 1
+    thing = -1
 
-    y1 = random.randint(-240, 70)
-    y2 = y1 + 350
-    pygame.draw.rect(DISPLAY,green,(w1,y1,50,250))
-    pygame.draw.rect(DISPLAY,green,(w1,y2,50,400))
-    if y1 > 0:
-        pygame.draw.rect(DISPLAY,green,(w1,0,50,250))
+    y1 = random.randint(150, height-150)
+    y2 = y1 + playerW * 4
+    pygame.draw.rect(DISPLAY,red,(w1,0,50,y1))
+    pygame.draw.rect(DISPLAY,green,(w1,y2,50,height*2))
 
 def die(player_x_pos):
     global moving
@@ -43,27 +39,31 @@ def die(player_x_pos):
     player = pygame.draw.rect(DISPLAY,red,(player_x_pos,player_y_pos,playerW,playerH))
     pygame.display.update()
     return player_x_pos
+
+pro = height/100
     
 scoreFont = pygame.font.Font("/Users/Thomas/Documents/Assets/Charlie_Kingdom.ttf", 200)
+speedFont = pygame.font.Font("/Users/Thomas/Documents/Assets/Charlie_Kingdom.ttf", 50)
 
-player_x_pos = 295
-player_y_pos = 215
+player_x_pos = width/2 - 25
+player_y_pos = height/2 - 25
 
 downAcceleration  = 0.05
 downSpeed = 0
 
 sDown = False
 
-playerW = 25
-playerH = 25
-player = pygame.draw.rect(DISPLAY,red,(player_x_pos,player_y_pos,25,25))
+playerW = width/19.2
+playerH = playerW
+player = pygame.draw.rect(DISPLAY,red,(player_x_pos,player_y_pos,playerW,playerH))
 
 times = 0
-speed = 1.5
-
+speed = width / 425
+if height > width:
+    speed *= 1.5
 thing = 500
 
-w1 = 590
+w1 = width-50
 
 done = False
 moving = True
@@ -83,7 +83,8 @@ while True:
     if sDown == True and moving == True:
         pygame.draw.rect(DISPLAY,white,(player_x_pos,player_y_pos,playerW,playerH))
         times += 1
-        player_y_pos -= 2
+        stupid = height/8
+        player_y_pos -= stupid / 30 - times/100
         if player_y_pos <= 0:
             player_y_pos = 0
             sDown = False
@@ -94,33 +95,43 @@ while True:
     
     if downSpeed <= 5:
         downSpeed += downAcceleration
+    
     if player_y_pos >= height - 25:
         player_y_pos = height - 25
         print(points)
         pygame.quit()
         sys.exit()
     if player_x_pos >= width - 25:
-        speed = -1.5
+        speed = speed * -1
         w1 = 0
         thing = 0
         drawPipes(w1)
     if player_x_pos <= 0:
-        speed = 1.5
-        w1 = 590
+        speed = speed * -1
+        w1 = width-50
         thing = 0
         drawPipes(w1)
-
+    
     if w1 == 0 and done == False:
         if player_x_pos <= 50:
-            if player_y_pos <= y1+250 or player_y_pos >= y2:
+            if player_y_pos <= y1 or player_y_pos >= y2:
+                if player_y_pos <= y1 + height/1.5:
+                    print("1")
+                if player_y_pos >= y2:
+                    print("2")
                 done = True
                 player_x_pos = die(player_x_pos)
-    if w1 == 590 and done == False:
-        if player_x_pos >= 565:
-            if player_y_pos <= y1+250 or player_y_pos >= y2:
+    if w1 == width-50 and done == False:
+        if player_x_pos >= w1-25:
+            if player_y_pos <= y1 or player_y_pos >= y2:
+                if player_y_pos <= y1 + height/1.5:
+                    print("1")
+                if player_y_pos >= y2:
+                    print("2")
                 done = True
                 player_x_pos = die(player_x_pos)
-
+    if points >= 10:
+        scoreFont = pygame.font.Font("/Users/Thomas/Documents/Assets/Charlie_Kingdom.ttf", 100)
 
     pygame.draw.rect(DISPLAY,white,(player_x_pos,player_y_pos,playerW,playerH))
     if sDown == False:
@@ -128,7 +139,10 @@ while True:
     if moving == True:
         player_x_pos += speed
     scoreText = scoreFont.render(str(points), True, (100, 100, 100))
-    DISPLAY.blit(scoreText, (250, 100))
+    if points < 100:
+        DISPLAY.blit(scoreText, (width/2 - 50, height/2 - 100))
+    elif points >= 100:
+        DISPLAY.blit(scoreText, (width/2 - 75, height/2 - 100))
     player = pygame.draw.rect(DISPLAY,red,(player_x_pos,player_y_pos,playerW,playerH))
     pygame.display.update()
 
