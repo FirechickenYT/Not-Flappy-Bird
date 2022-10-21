@@ -5,8 +5,8 @@ from time import sleep
 
 
 pygame.init()
-width = 640
-height = 480
+width = int(input("Enter screen width"))
+height = int(input("Enter screen height"))
 DISPLAY=pygame.display.set_mode((width,height),0,32)
 
 white=(255,255,255)
@@ -26,7 +26,7 @@ def drawPipes(w1):
 
     y1 = random.randint(150, height-150)
     y2 = y1 + playerW * 4
-    pygame.draw.rect(DISPLAY,red,(w1,0,50,y1))
+    pygame.draw.rect(DISPLAY,green,(w1,0,50,y1))
     pygame.draw.rect(DISPLAY,green,(w1,y2,50,height*2))
 
 def die(player_x_pos):
