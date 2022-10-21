@@ -23,6 +23,8 @@ def drawPipes(w1):
     DISPLAY.fill(white)
     global y1
     global y2
+    global points
+    points += 1
 
     y1 = random.randint(-240, 70)
     y2 = y1 + 350
@@ -42,22 +44,33 @@ def die(player_x_pos):
     pygame.display.update()
     return player_x_pos
     
+scoreFont = pygame.font.Font("/Users/Thomas/Documents/Assets/Charlie_Kingdom.ttf", 200)
 
 player_x_pos = 295
 player_y_pos = 215
+
 downAcceleration  = 0.05
 downSpeed = 0
+
 sDown = False
+
 playerW = 25
 playerH = 25
 player = pygame.draw.rect(DISPLAY,red,(player_x_pos,player_y_pos,25,25))
+
 times = 0
 speed = 1.5
+
 thing = 500
+
 w1 = 590
+
 done = False
 moving = True
+
+points = -1
 drawPipes(w1)
+
 while True:
     for event in pygame.event.get():
         if event.type==QUIT:
@@ -83,6 +96,7 @@ while True:
         downSpeed += downAcceleration
     if player_y_pos >= height - 25:
         player_y_pos = height - 25
+        print(points)
         pygame.quit()
         sys.exit()
     if player_x_pos >= width - 25:
@@ -113,6 +127,8 @@ while True:
         player_y_pos += downSpeed
     if moving == True:
         player_x_pos += speed
+    scoreText = scoreFont.render(str(points), True, (100, 100, 100))
+    DISPLAY.blit(scoreText, (250, 100))
     player = pygame.draw.rect(DISPLAY,red,(player_x_pos,player_y_pos,playerW,playerH))
     pygame.display.update()
 
